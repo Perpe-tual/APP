@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ page_title }} | TinySteps</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ── Reset & Base ── */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Quicksand', Arial, sans-serif;
+            background: #ecf8ff;
+            color: #222222;
+            min-height: 100vh;
+        }
+
+        /* ── Navigation Bar ── */
+        nav {
+            background: #ffffff;
+            padding: 18px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1100px;
+            margin: 0 auto 20px;
+            border-radius: 24px;
+            box-shadow: 0 12px 30px rgba(15, 75, 95, 0.12);
+        }
+
+        nav .logo {
+            font-size: 2rem;
+            font-weight: 700;
+            font-family: 'Fredoka One', 'Comic Sans MS', cursive;
+            color: #0f4b5f;
+            text-decoration: none;
+            letter-spacing: 0.03em;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+
+        nav ul li a {
+            color: #333333;
+            text-decoration: none;
+            font-size: 1.05rem;
+            font-weight: 600;
+        }
+
+        nav ul li a:hover {
+            color: #0f4b5f;
+            text-decoration: underline;
+        }
+
+        .cart-badge {
+            background: #ffffff;
+            color: #333333;
+            border-radius: 50%;
+            padding: 4px 10px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-left: 8px;
+            box-shadow: inset 0 0 0 1px rgba(51, 51, 51, 0.12);
+        }
+
+        /* ── Main Content ── */
+        main {
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 0 20px;
+            background: #CDE7F0;
+        }
+
+        /* ── Product Cards ── */
+        .hero-images {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 18px;
+            margin-bottom: 30px;
+        }
+
+        .hero-image-card {
+            background: #ffffff;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 12px 24px rgba(15, 75, 95, 0.08);
+            text-align: left;
+        }
+
+        .hero-image-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .hero-image-card .hero-copy {
+            padding: 16px;
+            color: #163c54;
+        }
+
+        .hero-image-card .hero-copy h3 {
+            margin-bottom: 8px;
+            font-size: 1.05rem;
+            color: #1f3f5d;
+        }
+
+        .hero-image-card .hero-copy p {
+            margin: 0;
+            color: #4a5e72;
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+        .page-heading {
+            font-size: 2rem;
+            margin-bottom: 16px;
+            color: #1f3f5d;
+            letter-spacing: -0.03em;
+        }
+
+        .product-link {
+            color: #1f3f5d;
+            text-decoration: none;
+        }
+        .product-link:hover {
+            color: #0f4b5f;
+            text-decoration: underline;
+        }
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .product-card {
+            background: #FFFFFF;
+            border: 1px solid rgba(0, 95, 136, 0.14);
+            border-radius: 16px;
+            padding: 18px;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .product-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .product-card h3 { margin: 10px 0 5px; font-size: 1rem; color: #1f3f5d; }
+        .product-card .price { color: #0f4b5f; font-weight: bold; font-size: 1.15rem; margin-bottom: 14px; }
+        .product-card .age { color: #44515d; font-size: 0.9rem; margin-bottom: 10px; }
+
+        /* ── Buttons ── */
+        .btn {
+            display: inline-block;
+            padding: 9px 18px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 0.95rem;
+        }
+
+        .btn-primary { background: #0f4b5f; color: white; box-shadow: 0 8px 15px rgba(15, 75, 95, 0.18); }
+        .btn-primary:hover { background: #0a3646; }
+        .btn-secondary { background: #ffffff; color: #0f4b5f; border: 1px solid #0f4b5f; }
+        .btn-secondary:hover { background: #eef8ff; }
+        .btn-danger { background: #ff4d4d; color: white; }
+        .btn-danger:hover { background: #cc0000; }
+        .btn-success { background: #4CAF50; color: white; }
+
+        /* ── Forms ── */
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        /* ── Cart Table ── */
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 12px; border-bottom: 1px solid #ffe0ee; text-align: left; }
+        th { background: #FFFFFF; }
+
+        /* ── Messages / Alerts ── */
+        .alert {
+            padding: 12px 18px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+        .alert-success { background: #d4edda; color: #155724; }
+        .alert-info { background: #d1ecf1; color: #0c5460; }
+
+        .product-detail-grid {
+            display: grid;
+            grid-template-columns: minmax(300px, 1.5fr) minmax(260px, 1fr);
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .product-gallery {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .product-gallery img#main-product-image {
+            width: 100%;
+            border-radius: 24px;
+            object-fit: cover;
+            box-shadow: 0 16px 35px rgba(15, 75, 95, 0.16);
+        }
+
+        .thumbnail-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .thumbnail {
+            width: 90px;
+            height: 90px;
+            object-fit: cover;
+            border-radius: 16px;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: border-color 0.2s ease;
+        }
+
+        .thumbnail.active,
+        .thumbnail:hover {
+            border-color: #0f4b5f;
+        }
+
+        .product-detail-info p {
+            color: #44515d;
+            line-height: 1.8;
+            margin-bottom: 18px;
+        }
+
+        .product-detail-info .price {
+            color: #0f4b5f;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .product-detail-header {
+            margin-bottom: 22px;
+        }
+
+        .product-detail-header .age {
+            color: #44515d;
+            margin-top: 8px;
+            display: block;
+        }
+
+        /* ── Hero Section ── */
+        .hero-top {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+            margin-bottom: 24px;
+            position: relative;
+            min-height: 420px;
+        }
+
+        .hero-top-card {
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 18px 45px rgba(15, 75, 95, 0.14);
+            background: #ffffff;
+            min-height: 420px;
+        }
+
+        .hero-top-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .hero-top-overlay {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+        }
+
+        .hero-top-overlay-copy {
+            background: transparent;
+            backdrop-filter: none;
+            border: none;
+            padding: 22px 30px;
+            max-width: 760px;
+            text-align: center;
+            box-shadow: none;
+        }
+
+        .hero-top-overlay-copy p {
+            font-size: 1.35rem;
+            line-height: 1.4;
+            color: #ffffff;
+            font-weight: 700;
+            margin: 0;
+            text-shadow: 0 3px 12px rgba(15, 75, 95, 0.35);
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #4a7ab1 0%, #86b9e6 100%);
+            color: white;
+            padding: 40px 30px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 14px 30px rgba(14, 57, 101, 0.14);
+        }
+        .hero h1 { font-size: 2.2rem; margin-bottom: 10px; color: white; }
+        .hero p { font-size: 1.1rem; margin-bottom: 20px; color: white; }
+
+        /* ── Footer ── */
+        footer {
+            text-align: center;
+            padding: 24px 20px;
+            background: #0f4b5f;
+            color: #ffffff;
+            margin-top: 50px;
+        }
+
+        footer p {
+            margin: 6px 0;
+            color: #f6f9ff;
+        }
+
+        .filter-bar {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-top: 22px;
+            margin-bottom: 40px;
+        }
+
+        .category-card {
+            background: linear-gradient(135deg, #e8f4f8 0%, #f0f9fc 100%);
+            border: 2px solid rgba(15, 75, 95, 0.15);
+            border-radius: 20px;
+            padding: 28px 20px;
+            text-align: center;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 8px 20px rgba(15, 75, 95, 0.08);
+        }
+
+        .category-card:hover {
+            border-color: #0f4b5f;
+            box-shadow: 0 14px 35px rgba(15, 75, 95, 0.16);
+            transform: translateY(-6px);
+        }
+
+        .category-icon {
+            font-size: 3rem;
+            line-height: 1;
+        }
+
+        .category-card h3 {
+            color: #0f4b5f;
+            font-size: 1.15rem;
+            margin-bottom: 6px;
+        }
+
+        .category-card p {
+            color: #44515d;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        h2 { margin-bottom: 10px; color: #0f4b5f; }
+        h3 { color: #1f3f5d; }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="{% url 'home' %}" class="logo">TinySteps</a>
+    <ul>
+        <li><a href="{% url 'home' %}">Home</a></li>
+        <li><a href="{% url 'product_list' %}">Products</a></li>
+        <li>
+            <a href="{% url 'cart' %}">
+                🛒 Cart
+                {% if request.session.cart %}
+                    <span class="cart-badge">
+                        {{ request.session.cart|length }}
+                    </span>
+                {% endif %}
+            </a>
+        </li>
+    </ul>
+</nav>
+
+<main>
+    {% block content %}
+    <!-- Each page fills in this block -->
+    {% endblock %}
+</main>
+
+<footer>
+    <p>TinySteps Baby Store — For little ones aged 0–12 years</p>
+    <p style="font-size:0.85rem; margin-top:5px;">Made with LOVE❤️ for tiny feet and tiny hands</p>
+</footer>
+
+</body>
+</html>

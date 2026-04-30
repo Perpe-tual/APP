@@ -1,0 +1,18 @@
+{% extends 'store/base.html' %}
+
+{% block content %}
+
+<div style="text-align:center; padding: 50px 20px;">
+    <div style="font-size: 4rem;"></div>
+    <h2 style="margin: 20px 0 10px;">Order Placed Successfully!</h2>
+    <p style="color:#666; font-size:1.1rem;">
+        Thank you for shopping at TinySteps! Your tiny one will be stylish soon.
+    </p>
+    <div class="alert alert-success" style="display:inline-block; margin-top:20px;">
+        We'll process your order and deliver it soon.
+    </div>
+    <br><br>
+    <a href="{% url 'home' %}" class="btn btn-primary">← Back to Home</a>
+</div>
+
+{% endblock %}

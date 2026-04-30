@@ -1,0 +1,28 @@
+{% extends 'store/base.html' %}
+
+{% block content %}
+
+<h2>Checkout</h2>
+<p style="margin-bottom:20px; color:#666;">Almost done! Fill in your details below.</p>
+
+<div style="max-width: 500px;">
+    <form method="POST">
+        {% csrf_token %}
+
+        {% for field in form %}
+        <div class="form-group">
+            {{ field.label_tag }}
+            {{ field }}
+            {% if field.errors %}
+                <p style="color:red; font-size:0.85rem;">{{ field.errors }}</p>
+            {% endif %}
+        </div>
+        {% endfor %}
+
+        <button type="submit" class="btn btn-success" style="margin-top:10px;">
+            ✅ Place Order
+        </button>
+    </form>
+</div>
+
+{% endblock %}

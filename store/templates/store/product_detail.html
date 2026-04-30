@@ -1,0 +1,43 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="product-detail-header">
+    <h2>{{ product.name }}</h2>
+    <span class="age">Age: {{ product.age_range }}</span>
+</div>
+
+<div class="product-detail-grid">
+    <div class="product-gallery">
+        <img id="main-product-image" src="{{ gallery_images.0 }}" alt="{{ product.name }}">
+        <div class="thumbnail-row">
+            {% for image in gallery_images %}
+            <img class="thumbnail{% if forloop.first %} active{% endif %}" src="{{ image }}" data-full="{{ image }}" alt="{{ product.name }} gallery {{ forloop.counter }}">
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="product-detail-info">
+        <p>{{ product.description }}</p>
+        <p class="price">${{ product.price }}</p>
+        <a href="{% url 'add_to_cart' product.id %}" class="btn btn-primary">Add to Cart 🛒</a>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const thumbnails = document.querySelectorAll('.thumbnail');
+        const mainImage = document.getElementById('main-product-image');
+
+        thumbnails.forEach(function(thumb) {
+            thumb.addEventListener('click', function() {
+                thumbnails.forEach(function(item) {
+                    item.classList.remove('active');
+                });
+                thumb.classList.add('active');
+                mainImage.src = thumb.dataset.full;
+            });
+        });
+    });
+</script>
+{% endblock %}

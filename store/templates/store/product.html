@@ -1,0 +1,59 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<h2 class="page-heading">All Baby Products</h2>
+
+<!-- Category Filter Buttons -->
+<div class="filter-bar">
+    <a href="{% url 'product_list' %}" 
+       class="btn {% if not selected_category %}btn-primary{% else %}btn-secondary{% endif %}">
+        All
+    </a>
+    <a href="{% url 'product_list' %}?category=clothing"
+       class="btn {% if selected_category == 'clothing' %}btn-primary{% else %}btn-secondary{% endif %}">
+         Clothing
+    </a>
+    <a href="{% url 'product_list' %}?category=shoes"
+       class="btn {% if selected_category == 'shoes' %}btn-primary{% else %}btn-secondary{% endif %}">
+         Shoes
+    </a>
+    <a href="{% url 'product_list' %}?category=hats"
+       class="btn {% if selected_category == 'hats' %}btn-primary{% else %}btn-secondary{% endif %}">
+         Hats & Beanies
+    </a>
+    <a href="{% url 'product_list' %}?category=accessories"
+       class="btn {% if selected_category == 'accessories' %}btn-primary{% else %}btn-secondary{% endif %}">
+         Accessories
+    </a>
+</div>
+
+{% if products %}
+    <div class="product-grid">
+        {% for product in products %}
+        <div class="product-card">
+            <a href="{% url 'product_detail' product.id %}">
+                {% if product.image_url %}
+                    <img src="{{ product.image_url }}" alt="{{ product.name }}">
+                {% elif forloop.counter0|divisibleby:"2" %}
+                    <img src="{% static 'store/images/boy.jpg' %}" alt="{{ product.name }}">
+                {% else %}
+                    <img src="{% static 'store/images/girl.jpg' %}" alt="{{ product.name }}">
+                {% endif %}
+            </a>
+            <h3><a class="product-link" href="{% url 'product_detail' product.id %}">{{ product.name }}</a></h3>
+            <p class="age">Age: {{ product.age_range }}</p>
+            <p style="color:#44515d; font-size:0.95rem; margin-bottom:12px;">
+                {{ product.description|truncatewords:12 }}
+            </p>
+            <p class="price">${{ product.price }}</p>
+            <a href="{% url 'add_to_cart' product.id %}" class="btn btn-primary">Add to Cart 🛒</a>
+        </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <p style="margin-top:20px;">No products found in this category.</p>
+{% endif %}
+
+{% endblock %}

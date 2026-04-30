@@ -1,0 +1,83 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- Top hero image row below navbar -->
+<div class="hero-top">
+    <div class="hero-top-card">
+        <img src="{% static 'store/images/boy.jpg' %}" alt="Boy baby outfit">
+    </div>
+    <div class="hero-top-card">
+        <img src="{% static 'store/images/girl.jpg' %}" alt="Girl baby outfit">
+    </div>
+    <div class="hero-top-overlay">
+        <div class="hero-top-overlay-copy">
+            <p>For your little one, and every moment that matters.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Hero / Banner Section -->
+<div class="hero">
+    <h1>Welcome to TinySteps!</h1>
+    <p>Adorable clothes and shoes for babies aged 0–12 years</p>
+    <a href="{% url 'product_list' %}" class="btn btn-secondary">Shop All Products</a>
+</div>
+
+<!-- Featured Products Section -->
+<h2> Featured Products</h2>
+<p>Hand-picked favourites just for your little one</p>
+
+{% if featured_products %}
+    <div class="product-grid">
+        {% for product in featured_products %}
+        <div class="product-card">
+            {% if product.image_url %}
+                <img src="{{ product.image_url }}" alt="{{ product.name }}">
+            {% else %}
+                <img src="https://placehold.co/300x300?text={{ product.name }}" alt="{{ product.name }}">
+            {% endif %}
+            <h3>{{ product.name }}</h3>
+            <p class="age">Age: {{ product.age_range }}</p>
+            <p class="price">${{ product.price }}</p>
+            <a href="{% url 'add_to_cart' product.id %}" class="btn btn-primary">Add to Cart 🛒</a>
+        </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <p>No featured products yet. <a href="/admin">Add some in the admin panel!</a></p>
+{% endif %}
+
+<!-- Shop by Categories Section -->
+<h2 style="margin-top: 40px;">Shop by Category</h2>
+<p>Browse our collection by type</p>
+<div class="category-grid">
+    <a href="{% url 'product_list' %}?category=clothing" class="category-card">
+        <div class="category-icon">👕</div>
+        <h3>Clothing</h3>
+        <p>Soft & cozy baby clothes</p>
+    </a>
+    <a href="{% url 'product_list' %}?category=shoes" class="category-card">
+        <div class="category-icon">👟</div>
+        <h3>Shoes</h3>
+        <p>Comfortable baby footwear</p>
+    </a>
+    <a href="{% url 'product_list' %}?category=hats" class="category-card">
+        <div class="category-icon">🧢</div>
+        <h3>Hats & Beanies</h3>
+        <p>Adorable headwear for little ones</p>
+    </a>
+    <a href="{% url 'product_list' %}?category=accessories" class="category-card">
+        <div class="category-icon">✨</div>
+        <h3>Accessories</h3>
+        <p>Complete the perfect look</p>
+    </a>
+</div>
+
+<!-- Promo Banner -->
+<div class="alert alert-info" style="margin-top: 30px; text-align:center;">
+    🚚 Free delivery on orders over $50 | 100% safe materials for babies
+</div>
+
+{% endblock %}
