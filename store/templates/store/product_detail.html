@@ -2,6 +2,8 @@
 {% load static %}
 
 {% block content %}
+<a href="{% url 'product_list' %}" class="btn btn-secondary" style="margin-bottom: 20px;">← Back to Products</a>
+
 <div class="product-detail-header">
     <h2>{{ product.name }}</h2>
     <span class="age">Age: {{ product.age_range }}</span>
@@ -9,12 +11,11 @@
 
 <div class="product-detail-grid">
     <div class="product-gallery">
-        <img id="main-product-image" src="{{ gallery_images.0 }}" alt="{{ product.name }}">
-        <div class="thumbnail-row">
-            {% for image in gallery_images %}
-            <img class="thumbnail{% if forloop.first %} active{% endif %}" src="{{ image }}" data-full="{{ image }}" alt="{{ product.name }} gallery {{ forloop.counter }}">
-            {% endfor %}
-        </div>
+        {% if product.image_url %}
+            <img id="main-product-image" src="{{ product.image_url }}" alt="{{ product.name }}">
+        {% else %}
+            <img id="main-product-image" src="{% static 'store/images/boy.jpg' %}" alt="{{ product.name }}">
+        {% endif %}
     </div>
 
     <div class="product-detail-info">
@@ -24,20 +25,27 @@
     </div>
 </div>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const thumbnails = document.querySelectorAll('.thumbnail');
-        const mainImage = document.getElementById('main-product-image');
+<!-- Similar Products Section -->
+{% if similar_products %}
+<div class="similar-products-container">
+    <h3>You may also like</h3>
+    <div class="similar-products-grid">
+        {% for item in similar_products %}
+        <div class="similar-product-card">
+            <a href="{% url 'product_detail' item.id %}">
+                {% if item.image_url %}
+                    <img src="{{ item.image_url }}" alt="{{ item.name }}">
+                {% else %}
+                    <img src="{% static 'store/images/girl.jpg' %}" alt="{{ item.name }}">
+                {% endif %}
+            </a>
+            <h4><a class="product-link" href="{% url 'product_detail' item.id %}">{{ item.name }}</a></h4>
+            <p class="price">${{ item.price }}</p>
+            <a href="{% url 'add_to_cart' item.id %}" class="btn btn-primary" style="font-size: 0.85rem; padding: 6px 12px;">Add to Cart 🛒</a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
 
-        thumbnails.forEach(function(thumb) {
-            thumb.addEventListener('click', function() {
-                thumbnails.forEach(function(item) {
-                    item.classList.remove('active');
-                });
-                thumb.classList.add('active');
-                mainImage.src = thumb.dataset.full;
-            });
-        });
-    });
-</script>
 {% endblock %}

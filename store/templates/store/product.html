@@ -5,6 +5,14 @@
 
 <h2 class="page-heading">All Baby Products</h2>
 
+<!-- Search Bar -->
+<div class="search-container">
+    <form method="get" action="{% url 'product_list' %}">
+        <input type="text" name="search" class="search-input" placeholder="What are you looking for?....." value="{{ search_query }}">
+        <button type="submit" class="search-btn">Search</button>
+    </form>
+</div>
+
 <!-- Category Filter Buttons -->
 <div class="filter-bar">
     <a href="{% url 'product_list' %}" 
@@ -53,7 +61,7 @@
         {% endfor %}
     </div>
 {% else %}
-    <p style="margin-top:20px;">No products found in this category.</p>
+    <p style="margin-top:20px;">No products found. Try a different search or category.</p>
 {% endif %}
 
 {% endblock %}

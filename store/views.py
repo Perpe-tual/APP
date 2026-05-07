@@ -1,17 +1,55 @@
+import re
 from django.shortcuts import render, redirect, get_object_or_404
 from django.templatetags.static import static
+from django.db.models import Q
 from .models import Product
-from .forms import CheckoutForm
+from .forms import CheckoutForm, SearchForm
 
 # ─────────────────────────────────────────────
 # HOME PAGE
 # Shows welcome message + featured products
 # ─────────────────────────────────────────────
+def _is_newborn_age(age_text):
+    if 'newborn' in age_text or 'new born' in age_text:
+        return True
+    month_range = re.search(r'(\d+)\s*-\s*(\d+)\s*months?', age_text)
+    if month_range:
+        return int(month_range.group(2)) <= 10
+    single_month = re.search(r'(\d+)\s*months?', age_text)
+    if single_month:
+        return int(single_month.group(1)) <= 10
+    return False
+
+
+def _is_toddler_age(age_text):
+    if 'toddler' in age_text:
+        return True
+    year_range = re.search(r'(\d+)\s*-\s*(\d+)\s*years?', age_text)
+    if year_range:
+        low, high = int(year_range.group(1)), int(year_range.group(2))
+        return low >= 6 and high <= 10
+    return False
+
+
 def home(request):
     featured_products = Product.objects.filter(is_featured=True)
+    search_form = SearchForm()
+    
+    newborn_products = []
+    toddler_products = []
+    
+    for product in featured_products:
+        age_lower = product.age_range.lower()
+        if _is_newborn_age(age_lower):
+            newborn_products.append(product)
+        elif _is_toddler_age(age_lower):
+            toddler_products.append(product)
+    
     context = {
-        'featured_products': featured_products,
-        'page_title': 'Welcome to TinySteps Baby Store'
+        'newborn_products': newborn_products,
+        'toddler_products': toddler_products,
+        'search_form': search_form,
+        'page_title': 'Welcome to TinySteps Children\'s Wear'
     }
     return render(request, 'store/home.html', context)
 
@@ -22,14 +60,25 @@ def home(request):
 # ─────────────────────────────────────────────
 def product_list(request):
     category = request.GET.get('category')  # reads ?category=shoes from URL
-    if category:
-        products = Product.objects.filter(category=category)
-    else:
-        products = Product.objects.all()
+    search_query = request.GET.get('search', '')  # reads ?search=query from URL
+    search_form = SearchForm(request.GET if search_query else None)
+    
+    products = Product.objects.all()
+    
+    if search_query:
+        products = products.filter(
+            Q(name__icontains=search_query) | 
+            Q(description__icontains=search_query) |
+            Q(category__icontains=search_query)
+        )
+    elif category:
+        products = products.filter(category=category)
 
     context = {
         'products': products,
         'selected_category': category,
+        'search_form': search_form,
+        'search_query': search_query,
         'page_title': 'All Products'
     }
     return render(request, 'store/product.html', context)
@@ -42,20 +91,28 @@ def product_list(request):
 
 def product_detail(request, product_id):
     product = get_object_or_404(Product, id=product_id)
-    gallery_images = []
 
-    if product.image_url:
-        gallery_images.append(product.image_url)
-
-    gallery_images.extend([
-        static('store/images/boy.jpg'),
-        static('store/images/girl.jpg'),
-        static('store/images/boy 2 piece.jpg')
-    ])
+    # Get similar products by name similarity and category
+    # Extract keywords from product name to find truly similar items
+    product_name_words = set(product.name.lower().split())
+    similar_products = []
+    
+    candidates = Product.objects.filter(category=product.category).exclude(id=product_id)
+    for candidate in candidates:
+        candidate_words = set(candidate.name.lower().split())
+        # Check if they share meaningful keywords (filter out common words)
+        common_words = product_name_words & candidate_words
+        common_words = {w for w in common_words if len(w) > 2}  # Filter short words
+        if common_words:
+            similar_products.append(candidate)
+        if len(similar_products) >= 4:
+            break
+    
+    similar_products = similar_products[:4]
 
     context = {
         'product': product,
-        'gallery_images': gallery_images,
+        'similar_products': similar_products,
         'page_title': product.name
     }
     return render(request, 'store/product_detail.html', context)

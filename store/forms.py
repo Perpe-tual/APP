@@ -19,3 +19,9 @@ class CheckoutForm(forms.Form):
         max_length=20,
         widget=forms.TextInput(attrs={'placeholder': '+263 77 000 0000'})
     )
+
+class SearchForm(forms.Form):
+    query = forms.CharField(
+        max_length=100,
+        widget=forms.TextInput(attrs={'placeholder': 'Search for clothing or shoes...', 'class': 'search-input'})
+    )
